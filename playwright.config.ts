@@ -1,12 +1,15 @@
-import { defineConfig } from "@playwright/test";
-import { defineBddConfig } from "playwright-bdd";
+import { defineConfig } from '@playwright/test'
+import { defineBddConfig } from 'playwright-bdd'
 
 const testDir = defineBddConfig({
-  features: "sample.feature",
-  steps: "steps.js",
-});
+  features: 'features/*.feature',
+  steps: 'step_definitions/**/*.ts',
+})
 
 export default defineConfig({
   testDir,
-  reporter: "html",
-});
+  reporter: 'html',
+  use: {
+    testIdAttribute: 'data-test',
+  },
+})
