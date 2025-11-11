@@ -166,3 +166,4 @@ build/
 # OS
 Thumbs.db
 desktop.ini
+.features-gen/
