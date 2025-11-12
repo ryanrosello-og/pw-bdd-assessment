@@ -1,30 +1,57 @@
-import { expect } from '@playwright/test'
+import { Given, When, Then, expect } from '../support/fixtures'
+import { UI } from '../locators/ui'
+import { config } from '../support/config'
 
-import { Given, When, Then } from '../support/fixtures'
-Given('the user is on the login page', async ({ page }) => {
-  await page.goto('/')
+Given('the user is on the login page', async ({ ui }) => {
+  await ui.pw.goto('/')
+  await expect(ui.loginPage.userNameInput).toBeVisible()
 })
 
-Given('the user logs in with valid credentials', async ({}) => {
-  // Step: Given the user logs in with valid credentials
-  // From: features\checkout\order_flow.feature:6:5
+Given('the user logs in with valid credentials', async ({ ui }) => {
+  await ui.loginPage.login(
+    config.users.standard.username,
+    config.users.standard.password,
+    ui.products.title
+  )
 })
 
-Given('the user is logged in', async ({}) => {
-  // Step: Given the user is logged in
-  // From: features\products\cart_management.feature:7:5
+Given('the user is logged in', async ({ ui }) => {
+  await ui.loginPage.login(
+    config.users.standard.username,
+    config.users.standard.password,
+    ui.products.title
+  )
 })
 
 When(
   'the user logs in using {string} credentials',
-  async ({ page }, user_type: string) => {
-    console.log(`Logging in as ${user_type}`)
+  async ({ ui }, user_type: string) => {
+    if (user_type === 'valid') {
+      await ui.loginPage.login(
+        config.users.standard.username,
+        config.users.standard.password,
+        ui.products.title
+      )
+    } else if (user_type === 'invalid') {
+      await ui.loginPage.login(
+        config.users.invalid.username,
+        config.users.invalid.password
+      )
+    } else if (user_type === 'empty') {
+      await ui.loginPage.login('', '')
+    } else {
+      throw new Error(`Unknown user type: ${user_type}`)
+    }
   }
 )
 
 Then(
-  'the system should display {string}',
-  async ({ page }, expected_result: string) => {
-    console.log(`Verifying that the result is: ${expected_result}`)
+  'the application should display {string}',
+  async ({ ui }, expected_result: string) => {
+    if (expected_result === 'Products') {
+      await expect(ui.products.title).toBeVisible()
+    } else {
+      await expect(ui.loginPage.errorMessage).toHaveText(expected_result)
+    }
   }
 )

@@ -1,4 +1,5 @@
 import { Page } from '@playwright/test'
+import { loginPage } from './login'
 
 export const ui = (page: Page) => {
   const getItem = (productName: string) => {
@@ -13,15 +14,11 @@ export const ui = (page: Page) => {
   }
 
   return {
-    auth: {
-      emailInput: page.getByTestId('username'),
-      passwordInput: page.getByTestId('password'),
-      loginButton: page.getByTestId('login-button'),
-      errorMessage: page.getByTestId('error'),
-    },
+    pw: page,
+    loginPage: loginPage(page),
 
     products: {
-      title: page.getByTestId('title'),
+      title: page.locator('.title', { hasText: 'Products' }),
       sortDropdown: page.getByTestId('product-sort-container'),
 
       // Product card actions
@@ -36,7 +33,7 @@ export const ui = (page: Page) => {
           image: card.getByRole('img'),
           title: card.getByTestId('inventory-item-name'),
           price: card.getByTestId('inventory-item-price'),
-          addToCartBtn: card.getByRole('button', { name: 'Add to cart' }),
+          addToCartBtn: card.locator('button', { hasText: 'Add to cart' }),
         }
       },
     },
@@ -44,17 +41,17 @@ export const ui = (page: Page) => {
     // Cart
     cart: {
       itemsList: page.getByTestId('inventory-item'),
-      checkoutButton: page.getByTestId('checkout'),
+      checkoutButton: page.locator('button', { hasText: 'Checkout' }),
       item: getItem,
     },
 
     // Checkout flow
     checkout: {
       yourInformation: {
-        firstNameInput: page.getByLabel('firstName'),
-        lastNameInput: page.getByLabel('lastName'),
-        zipInput: page.getByLabel('postalCode'),
-        continueButton: page.getByTestId('continue'),
+        firstNameInput: page.getByPlaceholder('First Name'),
+        lastNameInput: page.getByPlaceholder('Last Name'),
+        zipInput: page.getByPlaceholder('Zip/Postal Code'),
+        continueButton: page.locator('button', { hasText: 'Continue' }),
       },
 
       // Review page
@@ -64,14 +61,14 @@ export const ui = (page: Page) => {
         subTotal: page.getByTestId('subtotal-label'),
         tax: page.getByTestId('tax-label'),
         total: page.getByTestId('total-label'),
-        finishButton: page.getByTestId('finish'),
+        finishButton: page.locator('button', { hasText: 'Finish' }),
         item: getItem,
       },
 
       // Order confirmation
       confirmation: {
         heading: page.getByTestId('complete-header'),
-        backHomeButton: page.getByTestId('back-to-products'),
+        backHomeButton: page.locator('button', { hasText: 'Back Home' }),
       },
     },
 

@@ -9,7 +9,7 @@ Feature: User Login
   @smoke @login
   Scenario Outline: User attempts to log in with different credentials
     When the user logs in using "<user_type>" credentials
-    Then the system should display "<expected_result>"
+    Then the application should display "<expected_result>"
 
     Examples:
       | user_type   | expected_result                                                          |
