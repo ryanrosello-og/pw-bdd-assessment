@@ -5,7 +5,7 @@ export const yourInformationPage = (page: Page) => {
     firstNameInput: page.getByPlaceholder('First Name'),
     lastNameInput: page.getByPlaceholder('Last Name'),
     zipInput: page.getByPlaceholder('Zip/Postal Code'),
-    continueButton: page.locator('button', { hasText: 'Continue' }),
+    continueButton: page.getByTestId('continue'),
   }
   return { ...locators }
 }
