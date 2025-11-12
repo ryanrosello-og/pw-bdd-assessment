@@ -1,6 +1,6 @@
 import { Given, When, Then } from '../support/fixtures'
 
-Given('the user is on the products page', async ({}) => {
+Given('the user is on the products page', async ({ ui }) => {
   // Step: And the user is on the products page
   // From: features\products\cart_management.feature:8:5
 })

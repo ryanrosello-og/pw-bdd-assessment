@@ -11,7 +11,7 @@ Given('the user logs in with valid credentials', async ({ ui }) => {
   await ui.loginPage.login(
     config.users.standard.username,
     config.users.standard.password,
-    ui.products.title
+    ui.productsPage.title
   )
 })
 
@@ -19,7 +19,7 @@ Given('the user is logged in', async ({ ui }) => {
   await ui.loginPage.login(
     config.users.standard.username,
     config.users.standard.password,
-    ui.products.title
+    ui.productsPage.title
   )
 })
 
@@ -30,7 +30,7 @@ When(
       await ui.loginPage.login(
         config.users.standard.username,
         config.users.standard.password,
-        ui.products.title
+        ui.productsPage.title
       )
     } else if (user_type === 'invalid') {
       await ui.loginPage.login(
@@ -49,7 +49,7 @@ Then(
   'the application should display {string}',
   async ({ ui }, expected_result: string) => {
     if (expected_result === 'Products') {
-      await expect(ui.products.title).toBeVisible()
+      await expect(ui.productsPage.title).toBeVisible()
     } else {
       await expect(ui.loginPage.errorMessage).toHaveText(expected_result)
     }
