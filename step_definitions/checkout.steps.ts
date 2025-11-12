@@ -1,31 +1,36 @@
-import { Given, When, Then } from '../support/fixtures'
+/* eslint-disable playwright/no-standalone-expect */
+import { DataTable } from 'playwright-bdd'
+import { expect, When, Then } from '../support/fixtures'
 
-When('proceeds to checkout with valid personal information:', async ({}, dataTable: DataTable) => {
-  // Step: And proceeds to checkout with valid personal information:
-  // From: features\checkout\order_flow.feature:11:5
-});
+When(
+  'proceeds to checkout with valid personal information:',
+  async ({ ui }, dataTable: DataTable) => {
+    await ui.header.shoppingCartLink.click()
+    await ui.cart.checkoutButton.click()
+    const data = dataTable.rowsHash()
+    await ui.checkout.yourInformation.firstNameInput.fill(data.first_name)
+    await ui.checkout.yourInformation.lastNameInput.fill(data.last_name)
+    await ui.checkout.yourInformation.zipInput.fill(data.postal_code)
+    await ui.checkout.yourInformation.continueButton.click()
+    await ui.checkout.review.finishButton.click()
+  }
+)
 
-Then('the order should be successfully completed', async ({}) => {
-  // Step: Then the order should be successfully completed
-  // From: features\checkout\order_flow.feature:14:5
-});
+Then('the order should be successfully completed', async ({ ui }) => {
+  await expect(ui.checkout.confirmation.heading).toHaveText(
+    'Thank you for your order!'
+  )
+})
 
-Then('a confirmation message {string} should be displayed', async ({}, arg: string) => {
-  // Step: And a confirmation message "Thank you for your order!" should be displayed
-  // From: features\checkout\order_flow.feature:15:5
-});
+Then(
+  'the checkout page should display the correct order summary',
+  async ({ ui }) => {
+    // Step: Then the checkout page should display the correct order summary
+    // From: features\products\cart_management.feature:19:5
+  }
+)
 
-Then('the user should have the option to return to the products page', async ({}) => {
-  // Step: And the user should have the option to return to the products page
-  // From: features\checkout\order_flow.feature:16:5
-});
-
-Then('the checkout page should display the correct order summary', async ({}) => {
-  // Step: Then the checkout page should display the correct order summary
-  // From: features\products\cart_management.feature:19:5
-});
-
-Then('the total price should be accurately calculated', async ({}) => {
+Then('the total price should be accurately calculated', async ({ ui }) => {
   // Step: And the total price should be accurately calculated
   // From: features\products\cart_management.feature:20:5
-});
+})

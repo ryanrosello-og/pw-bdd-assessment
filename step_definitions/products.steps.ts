@@ -1,42 +1,90 @@
-import { Given, When, Then } from '../support/fixtures'
+/* eslint-disable playwright/no-standalone-expect */
+import { DataTable } from 'playwright-bdd/dist/cucumber/DataTable'
+import { config } from '../support/config'
+import { Given, When, Then, expect } from '../support/fixtures'
 
 Given('the user is on the products page', async ({ ui }) => {
-  // Step: And the user is on the products page
-  // From: features\products\cart_management.feature:8:5
+  await ui.loginPage.login(
+    config.users.standard.username,
+    config.users.standard.password,
+    ui.productsPage.title
+  )
 })
 
-Given('a list of items is displayed', async ({}) => {
-  // Step: And a list of items is displayed
-  // From: features\products\sort_product_items.feature:7:5
-})
-
-When('the user sorts the items by {string}', async ({}, arg: string) => {
-  // Step: When the user sorts the items by "Price"
-  // From: features\products\sort_product_items.feature:11:5
-})
-
-When('the user adds multiple products to the cart', async ({}) => {
-  // Step: When the user adds multiple products to the cart
-  // From: features\checkout\order_flow.feature:10:5
+Given('a list of items is displayed', async ({ ui }) => {
+  await expect(ui.productsPage.productList).toBeVisible()
 })
 
 When(
-  'the user adds the following items to the cart:',
-  async ({}, dataTable: DataTable) => {
-    // Step: When the user adds the following items to the cart:
-    // From: features\products\cart_management.feature:12:5
+  'the user sorts the items by {string}',
+  async ({ ui }, sortOption: string) => {
+    await ui.productsPage.sortDropdown.selectOption(sortOption)
   }
 )
 
-When('the user navigates to the cart', async ({}) => {
-  // Step: And the user navigates to the cart
-  // From: features\products\cart_management.feature:16:5
+When('the user adds multiple products to the cart', async ({ ui }) => {
+  await ui.productsPage.productCard('Sauce Labs Backpack').addToCartBtn.click()
+  await ui.productsPage
+    .productCard('Sauce Labs Fleece Jacket')
+    .addToCartBtn.click()
+  await expect(ui.header.shoppingCartItemCount).toHaveCount(2)
+})
+
+When(
+  'the user adds the following items to the cart',
+  async ({ ui }, dataTable: DataTable) => {
+    for (const row of dataTable.hashes()) {
+      await ui.productsPage.productCard(row.label).addToCartBtn.click()
+    }
+    await expect(ui.header.shoppingCartItemCount).toHaveCount(
+      dataTable.rows().length
+    )
+  }
+)
+
+When('the user navigates to the cart', async ({ ui }) => {
+  await ui.header.shoppingCartLink.click()
+  await expect(ui.cart.checkoutButton).toBeVisible()
 })
 
 Then(
-  'the items should be displayed in {string} order based on {string}',
-  async ({}, arg: string, arg1: string) => {
-    // Step: Then the items should be displayed in "ascending" order based on "Price"
-    // From: features\products\sort_product_items.feature:12:5
+  'the items should be displayed in order based on {string}',
+  async ({ ui }, sortOption: string) => {
+    switch (sortOption) {
+      case 'Name (A to Z)':
+        await expect(ui.productsPage.productList.first()).toHaveText(
+          /Sauce Labs Backpack/
+        )
+        await expect(ui.productsPage.productList.last()).toHaveText(
+          /Test.allTheThings() T-Shirt (Red)/
+        )
+        break
+      case 'Name (Z to A)':
+        await expect(ui.productsPage.productList.first()).toHaveText(
+          /Test.allTheThings() T-Shirt (Red)/
+        )
+        await expect(ui.productsPage.productList.last()).toHaveText(
+          /Sauce Labs Backpack/
+        )
+        break
+      case 'Price (low to high)':
+        await expect(ui.productsPage.productList.first()).toHaveText(
+          /Sauce Labs Onesie/
+        )
+        await expect(ui.productsPage.productList.last()).toHaveText(
+          /Sauce Labs Fleece Jacket/
+        )
+        break
+      case 'Price (high to low)':
+        await expect(ui.productsPage.productList.last()).toHaveText(
+          /Sauce Labs Onesie/
+        )
+        await expect(ui.productsPage.productList.first()).toHaveText(
+          /Sauce Labs Fleece Jacket/
+        )
+        break
+      default:
+        throw new Error(`Unknown sort option: ${sortOption}`)
+    }
   }
 )

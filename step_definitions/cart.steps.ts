@@ -1,14 +1,21 @@
-import { Given, When, Then } from '../support/fixtures'
+/* eslint-disable playwright/no-standalone-expect */
+import { When, Then, expect } from '../support/fixtures'
 
 Then(
   'the cart should display all added items with correct quantities',
-  async ({}) => {
-    // Step: Then the cart should display all added items with correct quantities
-    // From: features\products\cart_management.feature:17:5
+  async ({ ui }) => {
+    await expect(ui.cart.item('Sauce Labs Backpack').quantity).toHaveText('1')
+    await expect(ui.cart.item('Sauce Labs Backpack').price).toHaveText('$29.99')
+    await expect(ui.cart.item('Sauce Labs Fleece Jacket').quantity).toHaveText(
+      '1'
+    )
+    await expect(ui.cart.item('Sauce Labs Fleece Jacket').price).toHaveText(
+      '$49.99'
+    )
   }
 )
 
-When('the user proceeds to checkout', async ({}) => {
-  // Step: When the user proceeds to checkout
-  // From: features\products\cart_management.feature:18:5
+When('the user proceeds to checkout', async ({ ui }) => {
+  await ui.cart.checkoutButton.click()
+  await expect(ui.checkout.yourInformation.firstNameInput).toBeVisible()
 })

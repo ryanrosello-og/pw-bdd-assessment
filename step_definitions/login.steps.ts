@@ -1,5 +1,5 @@
+/* eslint-disable playwright/no-standalone-expect */
 import { Given, When, Then, expect } from '../support/fixtures'
-import { UI } from '../locators/ui'
 import { config } from '../support/config'
 
 Given('the user is on the login page', async ({ ui }) => {

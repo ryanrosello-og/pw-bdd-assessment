@@ -9,11 +9,11 @@ Feature: Sort items in product list
   @ui @sorting
   Scenario Outline: User sorts items by different criteria
     When the user sorts the items by "<sort_option>"
-    Then the items should be displayed in "<order>" order based on "<sort_option>"
+    Then the items should be displayed in order based on "<sort_option>"
 
     Examples:
-      | sort_option  | order      |
-      | Price        | ascending  |
-      | Price        | descending |
-      | Name         | ascending  |
-      | Name         | descending |
+      | sort_option          |
+      | Name (A to Z)        |
+      | Name (Z to A)        |
+      | Price (low to high)  |
+      | Price (high to low)  |

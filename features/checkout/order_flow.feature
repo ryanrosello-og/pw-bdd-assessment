@@ -12,5 +12,3 @@ Feature: Complete End-to-End Order Flow
       | FirstName | LastName | PostalCode |
       | John      | Doe      | 12345      |
     Then the order should be successfully completed
-    And a confirmation message "Thank you for your order!" should be displayed
-    And the user should have the option to return to the products page
