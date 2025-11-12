@@ -5,6 +5,7 @@ export const productsPage = (page: Page) => {
     title: page.locator('.title', { hasText: 'Products' }),
     sortDropdown: page.getByTestId('product-sort-container'),
     productList: page.getByTestId('inventory-list'),
+    productItems: page.getByTestId('inventory-item'),
     productCard: (name: string) => {
       const card = page.getByTestId('inventory-item').filter({
         has: page.getByTestId('inventory-item-name').filter({ hasText: name }),

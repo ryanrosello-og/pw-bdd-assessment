@@ -27,17 +27,20 @@ When('the user adds multiple products to the cart', async ({ ui }) => {
   await ui.productsPage
     .productCard('Sauce Labs Fleece Jacket')
     .addToCartBtn.click()
-  await expect(ui.header.shoppingCartItemCount).toHaveCount(2)
+  await expect(ui.header.shoppingCartItemCount).toHaveText('2', {
+    timeout: 15_000,
+  })
 })
 
 When(
   'the user adds the following items to the cart',
   async ({ ui }, dataTable: DataTable) => {
     for (const row of dataTable.hashes()) {
-      await ui.productsPage.productCard(row.label).addToCartBtn.click()
+      await ui.productsPage.productCard(row.item_name).addToCartBtn.click()
     }
-    await expect(ui.header.shoppingCartItemCount).toHaveCount(
-      dataTable.rows().length
+    await expect(ui.header.shoppingCartItemCount).toHaveText(
+      dataTable.rows().length.toString(),
+      { timeout: 15_000 }
     )
   }
 )
@@ -52,35 +55,35 @@ Then(
   async ({ ui }, sortOption: string) => {
     switch (sortOption) {
       case 'Name (A to Z)':
-        await expect(ui.productsPage.productList.first()).toHaveText(
-          /Sauce Labs Backpack/
+        await expect(ui.productsPage.productItems.first()).toContainText(
+          'Sauce Labs Backpack'
         )
-        await expect(ui.productsPage.productList.last()).toHaveText(
-          /Test.allTheThings() T-Shirt (Red)/
+        await expect(ui.productsPage.productItems.last()).toContainText(
+          'Test.allTheThings() T-Shirt (Red)'
         )
         break
       case 'Name (Z to A)':
-        await expect(ui.productsPage.productList.first()).toHaveText(
-          /Test.allTheThings() T-Shirt (Red)/
+        await expect(ui.productsPage.productItems.first()).toContainText(
+          'Test.allTheThings() T-Shirt (Red)'
         )
-        await expect(ui.productsPage.productList.last()).toHaveText(
-          /Sauce Labs Backpack/
+        await expect(ui.productsPage.productItems.last()).toContainText(
+          'Sauce Labs Backpack'
         )
         break
       case 'Price (low to high)':
-        await expect(ui.productsPage.productList.first()).toHaveText(
-          /Sauce Labs Onesie/
+        await expect(ui.productsPage.productItems.first()).toContainText(
+          'Sauce Labs Onesie'
         )
-        await expect(ui.productsPage.productList.last()).toHaveText(
-          /Sauce Labs Fleece Jacket/
+        await expect(ui.productsPage.productItems.last()).toContainText(
+          'Sauce Labs Fleece Jacket'
         )
         break
       case 'Price (high to low)':
-        await expect(ui.productsPage.productList.last()).toHaveText(
-          /Sauce Labs Onesie/
+        await expect(ui.productsPage.productItems.last()).toContainText(
+          'Sauce Labs Onesie'
         )
-        await expect(ui.productsPage.productList.first()).toHaveText(
-          /Sauce Labs Fleece Jacket/
+        await expect(ui.productsPage.productItems.first()).toContainText(
+          'Sauce Labs Fleece Jacket'
         )
         break
       default:
