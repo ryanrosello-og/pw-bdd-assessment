@@ -8,3 +8,8 @@
 ## Running Tests
 
 Run `pnpm test` to execute the test suite with Playwright BDD.
+
+
+## Generated Report
+
+https://ryanrosello-og.github.io/pw-bdd-assessment/
